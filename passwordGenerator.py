@@ -1,5 +1,6 @@
 import random as r
 import string as s
+
 class generatePassword:
     lowerCase = s.ascii_lowercase
     upperCase = s.ascii_uppercase
@@ -15,7 +16,7 @@ class generatePassword:
             self.weightList.extend(['L' for i in range(r.randint(2,6))])
             self.weightList.extend(['U' for i in range(r.randint(1,3))])
             self.weightList.extend(['N' for i in range(r.randint(1,2))])
-            self.weightList.extend("S"  for i in range(1))
+            self.weightList.extend(['S' for i in range(1)])
             print(self.weightList)
 
         if self.complexity == 2:
@@ -36,7 +37,14 @@ class generatePassword:
         createdPassword = ''
         j = ''
         self.setWeight()
-        for i in range(self.length):
+        createdPassword += r.choice(self.lowerCase)
+        createdPassword += r.choice(self.upperCase)
+        createdPassword += str(r.choice(self.numbers))
+        createdPassword += r.choice(self.specialChars) 
+        listPassword = list(createdPassword)
+        r.shuffle(listPassword)
+        createdPassword = "" . join(listPassword)
+        for i in range(4, self.length):
             j = r.choice(self.weightList)
             if j == 'L':
                 print("[INFO] Generated Char")
@@ -50,10 +58,12 @@ class generatePassword:
             elif j == 'S':
                 print("[INFO] Generated Special")
                 createdPassword += r.choice(self.specialChars)
-        print(createdPassword)
+
+        return createdPassword
+        # print(createdPassword)
 # o1 = generatePassword(1,4)
 # o2 = generatePassword(2,5)
 # o1.createPassword()
 # o2.createPassword()
-o3 = generatePassword(3,16)
-o3.createPassword()
+# o3 = generatePassword(3,16)
+# o3.createPassword()
