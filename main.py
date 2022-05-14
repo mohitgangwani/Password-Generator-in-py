@@ -1,8 +1,27 @@
 import passwordGenerator as passGen
 from cryptography.fernet import Fernet 
 import clipboard as cp
+import os.path as path
+
 class Main:
-    # id, desc, length, complexity
+    def __init__(self):
+        if not path.exists('./KJSbxXJBfS.key'):
+            self.setKey()
+        while True:
+            try:
+                choice = int(input("Select Action:\n1. Create New Password\n2. Read Saved Password\n3. Exit"))
+                if choice == 1:
+                    self.getInput()
+                    continue
+                elif choice == 2:
+                    self.getPasswords()
+                    continue
+                elif choice == 3:
+                    break
+            except ValueError:
+                print("Please Enter a number input")
+                continue
+
     def getInput(self):
         while True:
             try:
@@ -54,15 +73,33 @@ class Main:
 
 
     def savePassword(self):
-        self.generateKey()
-        file = open('XvfentS.txt','a')
-        file.write(f"ID: {self.id}\nDescription: {self.description}\nPassword: {self._generatedUserPassword}\n\n")
+        key = self.getKey()
+        fernet = Fernet(key)
+        file = open('XvfentS.sdvx','ab')
+        encryptedText = fernet.encrypt(f"ID: {self.id}\nDescription: {self.description}\nPassword: {self._generatedUserPassword}\n\n".encode())
+        file.write(encryptedText)
 
-    def generateKey(self):
+    def setKey(self):
         key = Fernet.generate_key()
-
+        key = key.decode()
+        # print(key)
+        shiftedKey = ''
+        for i in key:
+            shiftedKey += chr(ord(i)+5)
+        # print(shiftedKey)
+        shiftedKey = shiftedKey.encode()
         with open("KJSbxXJBfS.key","wb") as file1:
-            file1.write(key)
-            
+            file1.write(shiftedKey)
+    
+    def getKey(self):
+        with open("KJSbxXJBfS.key","rb") as file1:
+            shiftedKey = file1.read()
+        shiftedKey = shiftedKey.decode()
+        # print(shiftedKey)
+        unshiftedKey = ''
+        for i in shiftedKey:
+            unshiftedKey += chr(ord(i)-5) 
+        return unshiftedKey
+        
 userInput = Main()
 userInput.getInput()
