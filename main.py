@@ -1,15 +1,16 @@
+from decimal import DecimalTuple
 import passwordGenerator as passGen
 from cryptography.fernet import Fernet 
 import clipboard as cp
 import os.path as path
-
+import os
 class Main:
     def __init__(self):
         if not path.exists('./KJSbxXJBfS.key'):
             self.setKey()
         while True:
             try:
-                choice = int(input("Select Action:\n1. Create New Password\n2. Read Saved Password\n3. Exit"))
+                choice = int(input("Select Action:\n1. Create New Password\n2. Read Saved Password\n3. Exit\n"))
                 if choice == 1:
                     self.getInput()
                     continue
@@ -22,6 +23,7 @@ class Main:
                 print("Please Enter a number input")
                 continue
 
+
     def getInput(self):
         while True:
             try:
@@ -32,7 +34,7 @@ class Main:
         
         while True:
             try:
-               self.complexity = int(input("Enter the Complexity of the Password(Between 1 and 3): "))
+               self.complexity = int(input("Enter the Complexity of the Password (Between 1 and 3): "))
             except ValueError:
                 continue
             if(self.complexity < 1 or self.complexity > 3):
@@ -49,7 +51,7 @@ class Main:
             break
             
         while True:
-            self.description = input("Enter the Description for the password (Press enter if you want to skip): ")
+            self.description = input("Enter the Description for the Password (Press enter if you want to skip): ")
             self.description.strip()
             if(self.description == ''):
                 break
@@ -71,13 +73,31 @@ class Main:
         if self.userChoice == 'y':
             self.savePassword()
 
-
+    def getPasswords(self):
+        key = self.getKey()
+        fernet = Fernet(key)
+        file = open('XvfentS.sdvx','rb')
+        while True:
+            line = file.readline()
+            if(line == b""):
+                break
+            decryptPasswords = fernet.decrypt(line)
+            decryptPasswords = decryptPasswords.decode()
+            print(decryptPasswords)
+        
+    
     def savePassword(self):
+        if not path.exists('./XvfentS.sdvx'):
+            with open('XvfentS.sdvx','w') as file:
+                pass
+            os.system("attrib +h " + "XvfentS.sdvx")
+            file.close()
         key = self.getKey()
         fernet = Fernet(key)
         file = open('XvfentS.sdvx','ab')
         encryptedText = fernet.encrypt(f"ID: {self.id}\nDescription: {self.description}\nPassword: {self._generatedUserPassword}\n\n".encode())
         file.write(encryptedText)
+        file.write("\n".encode())
 
     def setKey(self):
         key = Fernet.generate_key()
@@ -90,6 +110,8 @@ class Main:
         shiftedKey = shiftedKey.encode()
         with open("KJSbxXJBfS.key","wb") as file1:
             file1.write(shiftedKey)
+        
+        os.system("attrib +h " + "KJSbxXJBfS.key")
     
     def getKey(self):
         with open("KJSbxXJBfS.key","rb") as file1:
@@ -102,4 +124,3 @@ class Main:
         return unshiftedKey
         
 userInput = Main()
-userInput.getInput()
