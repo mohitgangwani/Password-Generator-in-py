@@ -6,7 +6,18 @@ import os.path as path
 import os
 class Main:
     def __init__(self):
-        if not path.exists('./KJSbxXJBfS.key'):
+        appDataDir = os.getenv('APPDATA')
+        appFolderDir = "\managers"
+        folderDir = f"{appDataDir}{appFolderDir}"
+        self.path = f"{folderDir}\\"
+        if not path.exists(folderDir):
+            os.mkdir(folderDir)
+            os.system('attrib +h "' + folderDir + '"')
+        print(appDataDir)
+        print(appFolderDir)
+        print(folderDir)
+        print(self.path)
+        if not path.exists(f'{self.path}KJSbxXJBfS.key'):
             self.setKey()
         while True:
             try:
@@ -15,6 +26,9 @@ class Main:
                     self.getInput()
                     continue
                 elif choice == 2:
+                    if not path.exists(f'{self.path}XvfentS.sdvx'):
+                        print("No passwords have been set or the file may have been deleted, please create and save a new Password")
+                        continue
                     self.getPasswords()
                     continue
                 elif choice == 3:
@@ -63,6 +77,7 @@ class Main:
         self._generatedUserPassword = generatedPassword.createPassword()
         print(f"Your password is: {self._generatedUserPassword}")
         cp.copy(self._generatedUserPassword)
+        print("The Password has been copied to clipboard!")
         while True:
             try:
                 self.userChoice = input("Do you want to save the Generated Password? (y/n): ").strip().lower()[0]
@@ -76,7 +91,7 @@ class Main:
     def getPasswords(self):
         key = self.getKey()
         fernet = Fernet(key)
-        file = open('XvfentS.sdvx','rb')
+        file = open(f'{self.path}XvfentS.sdvx','rb')
         while True:
             line = file.readline()
             if(line == b""):
@@ -87,14 +102,14 @@ class Main:
         
     
     def savePassword(self):
-        if not path.exists('./XvfentS.sdvx'):
-            with open('XvfentS.sdvx','w') as file:
+        if not path.exists(f'{self.path}XvfentS.sdvx'):
+            with open(f'{self.path}XvfentS.sdvx','w') as file:
                 pass
-            os.system("attrib +h " + "XvfentS.sdvx")
+            os.system("attrib +h " + f'{self.path}XvfentS.sdvx')
             file.close()
         key = self.getKey()
         fernet = Fernet(key)
-        file = open('XvfentS.sdvx','ab')
+        file = open(f'{self.path}XvfentS.sdvx','ab')
         encryptedText = fernet.encrypt(f"ID: {self.id}\nDescription: {self.description}\nPassword: {self._generatedUserPassword}\n\n".encode())
         file.write(encryptedText)
         file.write("\n".encode())
@@ -108,13 +123,13 @@ class Main:
             shiftedKey += chr(ord(i)+5)
         # print(shiftedKey)
         shiftedKey = shiftedKey.encode()
-        with open("KJSbxXJBfS.key","wb") as file1:
+        with open(f'{self.path}KJSbxXJBfS.key',"wb") as file1:
             file1.write(shiftedKey)
         
-        os.system("attrib +h " + "KJSbxXJBfS.key")
+        os.system("attrib +h " + f'{self.path}KJSbxXJBfS.key')
     
     def getKey(self):
-        with open("KJSbxXJBfS.key","rb") as file1:
+        with open(f'{self.path}KJSbxXJBfS.key',"rb") as file1:
             shiftedKey = file1.read()
         shiftedKey = shiftedKey.decode()
         # print(shiftedKey)
