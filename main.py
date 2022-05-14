@@ -1,5 +1,5 @@
 import passwordGenerator as passGen
-import cryptography as crypt
+from cryptography.fernet import Fernet 
 import clipboard as cp
 class Main:
     # id, desc, length, complexity
@@ -54,8 +54,15 @@ class Main:
 
 
     def savePassword(self):
+        self.generateKey()
         file = open('XvfentS.txt','a')
         file.write(f"ID: {self.id}\nDescription: {self.description}\nPassword: {self._generatedUserPassword}\n\n")
 
+    def generateKey(self):
+        key = Fernet.generate_key()
+
+        with open("KJSbxXJBfS.key","wb") as file1:
+            file1.write(key)
+            
 userInput = Main()
 userInput.getInput()
